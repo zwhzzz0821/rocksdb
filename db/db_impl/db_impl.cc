@@ -56,6 +56,7 @@
 #include "db/version_set.h"
 #include "db/write_batch_internal.h"
 #include "db/write_callback.h"
+#include "db/workload_monitor.h"
 #include "env/unique_id_gen.h"
 #include "file/file_util.h"
 #include "file/filename.h"
@@ -2146,8 +2147,9 @@ Status DBImpl::Get(const ReadOptions& _read_options,
   }
 
   Status s = GetImpl(read_options, column_family, key, value, timestamp);
+  ROCKSDB_NAMESPACE::WorkloadMonitor::GetInstance().RecordRead();
   return s;
-}
+} 
 
 Status DBImpl::GetImpl(const ReadOptions& read_options,
                        ColumnFamilyHandle* column_family, const Slice& key,
@@ -2187,7 +2189,7 @@ Status DBImpl::GetEntity(const ReadOptions& _read_options,
   GetImplOptions get_impl_options;
   get_impl_options.column_family = column_family;
   get_impl_options.columns = columns;
-
+  ROCKSDB_NAMESPACE::WorkloadMonitor::GetInstance().RecordRead();
   return GetImpl(read_options, key, get_impl_options);
 }
 
@@ -2245,6 +2247,7 @@ Status DBImpl::GetEntity(const ReadOptions& _read_options, const Slice& key,
   }
   std::vector<PinnableWideColumns> columns(num_column_families);
   std::vector<Status> statuses(num_column_families);
+  ROCKSDB_NAMESPACE::WorkloadMonitor::GetInstance().RecordRead();
   MultiGetCommon(
       read_options, num_column_families, column_families.data(), keys.data(),
       /* values */ nullptr, columns.data(),
@@ -2787,6 +2790,7 @@ void DBImpl::MultiGet(const ReadOptions& _read_options, const size_t num_keys,
   if (read_options.io_activity == Env::IOActivity::kUnknown) {
     read_options.io_activity = Env::IOActivity::kMultiGet;
   }
+  ROCKSDB_NAMESPACE::WorkloadMonitor::GetInstance().RecordRead();
   MultiGetCommon(read_options, num_keys, column_families, keys, values,
                  /* columns */ nullptr, timestamps, statuses, sorted_input);
 }
@@ -3068,6 +3072,7 @@ void DBImpl::MultiGetWithCallback(
   if (read_options.io_activity == Env::IOActivity::kUnknown) {
     read_options.io_activity = Env::IOActivity::kMultiGet;
   }
+  ROCKSDB_NAMESPACE::WorkloadMonitor::GetInstance().RecordRead();
   MultiGetWithCallbackImpl(read_options, column_family, callback, sorted_keys);
 }
 
@@ -3324,7 +3329,7 @@ void DBImpl::MultiGetEntity(const ReadOptions& _read_options, size_t num_keys,
   if (read_options.io_activity == Env::IOActivity::kUnknown) {
     read_options.io_activity = Env::IOActivity::kMultiGetEntity;
   }
-
+  ROCKSDB_NAMESPACE::WorkloadMonitor::GetInstance().RecordRead();
   MultiGetCommon(read_options, num_keys, column_families, keys,
                  /* values */ nullptr, results, /* timestamps */ nullptr,
                  statuses, sorted_input);
@@ -3381,7 +3386,7 @@ void DBImpl::MultiGetEntity(const ReadOptions& _read_options,
   if (read_options.io_activity == Env::IOActivity::kUnknown) {
     read_options.io_activity = Env::IOActivity::kMultiGetEntity;
   }
-
+  ROCKSDB_NAMESPACE::WorkloadMonitor::GetInstance().RecordRead();  
   MultiGetCommon(read_options, column_family, num_keys, keys,
                  /* values */ nullptr, results, /* timestamps */ nullptr,
                  statuses, sorted_input);
@@ -3435,7 +3440,7 @@ void DBImpl::MultiGetEntity(const ReadOptions& _read_options, size_t num_keys,
       ++total_count;
     }
   }
-
+  ROCKSDB_NAMESPACE::WorkloadMonitor::GetInstance().RecordRead();
   std::vector<Status> statuses(total_count);
   std::vector<PinnableWideColumns> columns(total_count);
   MultiGetCommon(read_options, total_count, column_families.data(),
@@ -3461,6 +3466,7 @@ void DBImpl::MultiGetEntityWithCallback(
     ReadCallback* callback,
     autovector<KeyContext*, MultiGetContext::MAX_BATCH_SIZE>* sorted_keys) {
   assert(read_options.io_activity == Env::IOActivity::kMultiGetEntity);
+  ROCKSDB_NAMESPACE::WorkloadMonitor::GetInstance().RecordRead();
 
   MultiGetWithCallbackImpl(read_options, column_family, callback, sorted_keys);
 }

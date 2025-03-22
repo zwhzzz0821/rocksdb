@@ -44,6 +44,8 @@ project(rocksdb
   HOMEPAGE_URL https://rocksdb.org/
   LANGUAGES CXX C ASM)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE BOOL "Generate compile_commands.json")
+
 if(APPLE)
   # On macOS Cmake, when cross-compiling, sometimes CMAKE_SYSTEM_PROCESSOR wrongfully stays
   # the same as CMAKE_HOST_SYSTEM_PROCESSOR regardless the target CPU.
@@ -746,6 +748,7 @@ set(SOURCES
         db/write_controller.cc
         db/write_stall_stats.cc
         db/write_thread.cc
+        db/workload_monitor.cc
         env/composite_env.cc
         env/env.cc
         env/env_chroot.cc

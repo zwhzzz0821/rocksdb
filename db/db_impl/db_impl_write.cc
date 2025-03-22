@@ -14,6 +14,7 @@
 #include "logging/logging.h"
 #include "memtable/wbwi_memtable.h"
 #include "monitoring/perf_context_imp.h"
+#include "db/workload_monitor.h"
 #include "options/options_helper.h"
 #include "test_util/sync_point.h"
 #include "util/cast_util.h"
@@ -2688,6 +2689,7 @@ Status DB::Put(const WriteOptions& opt, ColumnFamilyHandle* column_family,
   if (!s.ok()) {
     return s;
   }
+  ROCKSDB_NAMESPACE::WorkloadMonitor::GetInstance().RecordWrite();
   return Write(opt, &batch);
 }
 
@@ -2704,6 +2706,7 @@ Status DB::Put(const WriteOptions& opt, ColumnFamilyHandle* column_family,
   if (!s.ok()) {
     return s;
   }
+  ROCKSDB_NAMESPACE::WorkloadMonitor::GetInstance().RecordWrite();
   return Write(opt, &batch);
 }
 
@@ -2724,7 +2727,7 @@ Status DB::PutEntity(const WriteOptions& options,
   if (!s.ok()) {
     return s;
   }
-
+  ROCKSDB_NAMESPACE::WorkloadMonitor::GetInstance().RecordWrite();
   return Write(options, &batch);
 }
 
@@ -2741,6 +2744,7 @@ Status DB::PutEntity(const WriteOptions& options, const Slice& key,
   if (!s.ok()) {
     return s;
   }
+  ROCKSDB_NAMESPACE::WorkloadMonitor::GetInstance().RecordWrite();
   return Write(options, &batch);
 }
 
@@ -2752,6 +2756,7 @@ Status DB::Delete(const WriteOptions& opt, ColumnFamilyHandle* column_family,
   if (!s.ok()) {
     return s;
   }
+  ROCKSDB_NAMESPACE::WorkloadMonitor::GetInstance().RecordWrite();
   return Write(opt, &batch);
 }
 
@@ -2768,6 +2773,7 @@ Status DB::Delete(const WriteOptions& opt, ColumnFamilyHandle* column_family,
   if (!s.ok()) {
     return s;
   }
+  ROCKSDB_NAMESPACE::WorkloadMonitor::GetInstance().RecordWrite();
   return Write(opt, &batch);
 }
 
@@ -2779,6 +2785,7 @@ Status DB::SingleDelete(const WriteOptions& opt,
   if (!s.ok()) {
     return s;
   }
+  ROCKSDB_NAMESPACE::WorkloadMonitor::GetInstance().RecordWrite();
   return Write(opt, &batch);
 }
 
@@ -2796,6 +2803,7 @@ Status DB::SingleDelete(const WriteOptions& opt,
   if (!s.ok()) {
     return s;
   }
+  ROCKSDB_NAMESPACE::WorkloadMonitor::GetInstance().RecordWrite();
   return Write(opt, &batch);
 }
 
@@ -2808,9 +2816,10 @@ Status DB::DeleteRange(const WriteOptions& opt,
   if (!s.ok()) {
     return s;
   }
+  ROCKSDB_NAMESPACE::WorkloadMonitor::GetInstance().RecordWrite();
   return Write(opt, &batch);
 }
-
+  
 Status DB::DeleteRange(const WriteOptions& opt,
                        ColumnFamilyHandle* column_family,
                        const Slice& begin_key, const Slice& end_key,
@@ -2826,6 +2835,7 @@ Status DB::DeleteRange(const WriteOptions& opt,
   if (!s.ok()) {
     return s;
   }
+  ROCKSDB_NAMESPACE::WorkloadMonitor::GetInstance().RecordWrite();
   return Write(opt, &batch);
 }
 
@@ -2837,6 +2847,7 @@ Status DB::Merge(const WriteOptions& opt, ColumnFamilyHandle* column_family,
   if (!s.ok()) {
     return s;
   }
+  ROCKSDB_NAMESPACE::WorkloadMonitor::GetInstance().RecordWrite();
   return Write(opt, &batch);
 }
 
@@ -2853,6 +2864,7 @@ Status DB::Merge(const WriteOptions& opt, ColumnFamilyHandle* column_family,
   if (!s.ok()) {
     return s;
   }
+  ROCKSDB_NAMESPACE::WorkloadMonitor::GetInstance().RecordWrite();
   return Write(opt, &batch);
 }
 
